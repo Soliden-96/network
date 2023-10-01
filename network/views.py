@@ -1,11 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
+from django.utils import timezone
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 import datetime
+import json
 
-from .models import User
+from .models import User,Post
 
 
 def index(request):
@@ -81,7 +83,7 @@ def add_post(request):
     post = Post(
         poster = request.user,
         content = content,
-        timestamp = datetime.datetime.now()
+        timestamp = timezone.now()
     )
     post.save()
 
