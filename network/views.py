@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+import datetime
 
 from .models import User
 
@@ -61,3 +62,28 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+
+def add_post(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"error":"You must login to create a post"}) 
+
+    if request.method != "POST":
+        return JsonResponse({"error":"Post request required"}, status=400)
+    
+    data = json.loads(request.body)
+
+    if data.get("content","").strip() == "":
+        return JsonResponse({"error":"Empty post"})
+    
+    content = data.get("content","")
+    
+    post = Post(
+        poster = request.user,
+        content = content,
+        timestamp = datetime.datetime.now()
+    )
+    post.save()
+
+    return JsonResponse({"message":"Posted successfully"},status = 201)
+

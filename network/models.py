@@ -9,7 +9,6 @@ class Post(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="post")
     content = models.TextField()
     timestamp = models.DateTimeField()
-    likes = models.PositiveIntegerField(default = 0)
 
     def __str__(self):
-        return f"{self.poster} wrote a post on {self.timestamp} that has received {self.likes} likes"
+        return f"{self.poster} wrote a post on {self.timestamp}"

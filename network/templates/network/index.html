@@ -1,10 +1,12 @@
 {% extends "network/layout.html" %}
 
+{% load static %}
+
 {% block body %}
     <div id="new-post">
         <div id="new-post-form">
             New Post
-            <form>
+            <form id="submit-post">
                 <div>
                     <textarea id="new-post-text"></textarea>
                 </div>
@@ -17,4 +19,8 @@
         
     </div>
     
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/posts.js' %}"></script>
 {% endblock %}
