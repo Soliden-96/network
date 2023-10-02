@@ -76,7 +76,7 @@ def add_post(request):
     data = json.loads(request.body)
 
     if data.get("content","").strip() == "":
-        return JsonResponse({"error":"Empty post"})
+        return JsonResponse({"error":"Empty post"},status=400)
     
     content = data.get("content","")
     
@@ -88,4 +88,16 @@ def add_post(request):
     post.save()
 
     return JsonResponse({"message":"Posted successfully"},status = 201)
+
+
+def load_posts(request,posts):
+
+    if posts == "all":
+        post_list = Post.objects.all()
+    else:
+        return JsonResponse({"error":"Invalid request"},status = 400)
+    
+    post_list = post_list.order_by("-timestamp").all()
+    
+    return JsonResponse(post_list)
 

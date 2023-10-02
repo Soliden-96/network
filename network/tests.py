@@ -14,7 +14,7 @@ class AddPostTestCAse(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="testuser",password="testpassword",email="test@email.com")
 
-    def test_add_post(self):
+    def test_add_post_correctly(self):
         c=Client()
         c.login(username="testuser",password="testpassword")
         data = {
@@ -25,3 +25,14 @@ class AddPostTestCAse(TestCase):
         
         self.assertEqual(response.status_code,201)
         self.assertEqual(Post.objects.count(),1)
+
+    def test_add_post_incorrectly(self):
+        c=Client()
+        c.login(username="testuser",password="testpassword")
+        data = {
+            'content':'    '
+        }
+        response = c.post("/add_post",data = json.dumps(data),content_type="application/json")
+
+        self.assertEqual(response.status_code,400)
+        self.assertEqual(Post.objects.count(),0)
