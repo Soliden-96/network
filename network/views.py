@@ -4,6 +4,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.core import serializers
 import datetime
 import json
 
@@ -91,6 +92,8 @@ def add_post(request):
 
 
 def load_posts(request,posts):
+    if Post.objects.count() == 0:
+        return JsonResponse({"message":"no posts available"})
 
     if posts == "all":
         post_list = Post.objects.all()
@@ -98,6 +101,7 @@ def load_posts(request,posts):
         return JsonResponse({"error":"Invalid request"},status = 400)
     
     post_list = post_list.order_by("-timestamp").all()
+    serialized_posts = serializers.serialize('json',post_list)
     
-    return JsonResponse(post_list)
+    return JsonResponse(serialized_posts,safe = False)
 

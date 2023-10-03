@@ -7,10 +7,11 @@
         <div id="new-post-form">
             New Post
             <form id="submit-post">
+            {% csrf_token %}
                 <div>
                     <textarea id="new-post-text"></textarea>
                 </div>
-                <input type="submit" class="btn btn-primary">
+                <input type="submit"  class="btn btn-primary">
             </form>
         </div>
     </div>
