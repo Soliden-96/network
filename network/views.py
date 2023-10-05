@@ -99,9 +99,9 @@ def load_posts(request,posts):
         post_list = Post.objects.all()
     else:
         return JsonResponse({"error":"Invalid request"},status = 400)
-    
+
     post_list = post_list.order_by("-timestamp").all()
-    serialized_posts = serializers.serialize('json',post_list)
     
-    return JsonResponse(serialized_posts,safe = False)
+    
+    return JsonResponse([post.serialize() for post in post_list],safe = False)
 

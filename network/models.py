@@ -10,5 +10,13 @@ class Post(models.Model):
     content = models.TextField()
     timestamp = models.DateTimeField()
 
+    def serialize(self):
+        return {
+            "id":self.id,
+            "poster":self.poster.username,
+            "content":self.content,
+            "timestamp":self.timestamp
+        }
+
     def __str__(self):
         return f"{self.poster} wrote a post on {self.timestamp}"

@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded',() =>{
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            data.forEach(post => show_post(post))     
+            data.forEach(post =>show_post(post))
         })
         .catch(error => {
             console.log(error);
@@ -50,13 +50,13 @@ document.addEventListener('DOMContentLoaded',() =>{
         let post_div = document.createElement('div');
 
         let poster_div = document.createElement('div');
-        poster_div.innerHTML = post["poster"];
+        poster_div.innerHTML = post.poster;
 
         let content_div = document.createElement('div');
-        content_div.innerHTML = post["content"];
+        content_div.innerHTML = post.content;
 
         let timestamp_div = document.createElement('div');
-        timestamp_div.innerHTML = post["timestamp"];
+        timestamp_div.innerHTML = post.timestamp;
 
         post_div.append(poster_div, content_div, timestamp_div);
         document.querySelector('#posts').append(post_div);
