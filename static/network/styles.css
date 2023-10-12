@@ -1,0 +1,18 @@
+#new-post{
+    padding-left: 10vh;
+    padding-right: 10vh;
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+    border: 2px solid rgb(102, 121, 141);
+    margin:5vh;
+}
+
+#new-post-form{
+    width:100%;
+    height:100%;
+}
+
+#new-post-text{
+    width:100%;
+    height:100%;
+}

@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded',() =>{
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            data.forEach(post =>show_post(post))
+            data.forEach(post => show_post(post))
         })
         .catch(error => {
             console.log(error);
@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded',() =>{
 
     function show_post(post){
         let post_div = document.createElement('div');
+        post_div.className = 'post';
 
         let poster_div = document.createElement('div');
         poster_div.innerHTML = post.poster;

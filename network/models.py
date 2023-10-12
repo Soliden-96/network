@@ -15,7 +15,7 @@ class Post(models.Model):
             "id":self.id,
             "poster":self.poster.username,
             "content":self.content,
-            "timestamp":self.timestamp
+            "timestamp":self.timestamp.strftime("%b %d %Y, %I:%M %p")
         }
 
     def __str__(self):
