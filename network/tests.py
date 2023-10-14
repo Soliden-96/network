@@ -61,10 +61,18 @@ class WebPageTests(StaticLiveServerTestCase):
         User.objects.all().delete()
         self.driver.quit()
 
+    def login_user(self):
+        self.driver.get(self.live_server_url + "/login")
+        user_field = self.driver.find_element(By.NAME,"username")
+        pass_field = self.driver.find_element(By.NAME,"password")
+        btn = self.driver.find_element(By.ID,"login-button")
+        user_field.send_keys("testuser")
+        pass_field.send_keys("testpassword")
+        btn.click()
     
     def test_adds_post_to_page(self):
-        c = Client()
-        c.login(username="testuser", password="testpassword")
+        self.login_user()
+        self.driver.implicitly_wait(3)
 
         self.driver.get(self.live_server_url + "")
         self.driver.implicitly_wait(3)
@@ -82,9 +90,7 @@ class WebPageTests(StaticLiveServerTestCase):
         textarea.send_keys("This is a new post")
         submit.click()
         
-        self.driver.implicitly_wait(3)
-        self.driver.refresh()
-        self.driver.implicitly_wait(20)
+        self.driver.implicitly_wait(5)
 
         posts = self.driver.find_element(By.ID,"posts")
         new_elements = posts.find_elements(By.CLASS_NAME,"post")

@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded',() =>{
         .then(response => response.json())
         .then(result => {
             console.log(result); 
-            location.reload();    
+            show_post(result.post);    
         })
         .catch(error => {
             console.log(error);
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded',() =>{
         timestamp_div.innerHTML = post.timestamp;
 
         post_div.append(poster_div, content_div, timestamp_div);
-        document.querySelector('#posts').append(post_div);
+        document.querySelector('#posts').prepend(post_div);
 
 
     }

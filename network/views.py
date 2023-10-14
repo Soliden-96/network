@@ -89,7 +89,7 @@ def add_post(request):
     )
     post.save()
 
-    return JsonResponse({"message":"Posted successfully"},status = 201)
+    return JsonResponse({"message":"Posted successfully","post":post.serialize()},status = 201)
 
 
 def load_posts(request,posts):
@@ -101,7 +101,7 @@ def load_posts(request,posts):
     else:
         return JsonResponse({"error":"Invalid request"},status = 400)
 
-    post_list = post_list.order_by("-timestamp").all()
+    post_list = post_list.order_by("timestamp").all()
     
     
     return JsonResponse([post.serialize() for post in post_list],safe = False)
