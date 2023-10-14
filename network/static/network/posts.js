@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded',() =>{
         });
     }
 
+
     function show_post(post){
         let post_div = document.createElement('div');
         post_div.className = 'post';
@@ -64,7 +65,7 @@ document.addEventListener('DOMContentLoaded',() =>{
 
         post_div.append(poster_div, content_div, timestamp_div);
         document.querySelector('#posts').prepend(post_div);
-
-
     }
+
+export { load_posts, show_post };
 
