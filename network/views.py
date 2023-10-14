@@ -106,3 +106,6 @@ def load_posts(request,posts):
     
     return JsonResponse([post.serialize() for post in post_list],safe = False)
 
+def profile(request,id):
+    return render(request, "profile.html")
+
