@@ -5,6 +5,10 @@
 {% block body %}
 
 <h3>{{ user_profile.username }} Profile Page</h3>
-<div id="posts"></div>
+<div id="posts" data-user_id="{{ user_profile.id }}"></div>
 
+{% endblock %}
+
+{% block script %}
+    <script type="module" src="{% static 'network/profile.js' %}"></script>
 {% endblock %}

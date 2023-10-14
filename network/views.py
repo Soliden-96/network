@@ -95,6 +95,8 @@ def add_post(request):
 def load_posts(request,posts):
     if Post.objects.count() == 0:
         return JsonResponse({"message":"no posts available"})
+    
+    print(f"Received 'posts' parameter: {posts}") 
 
     try: 
         posts = int(posts)
