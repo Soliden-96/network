@@ -6,10 +6,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Run network application tests
+    - name: Debug Information
+      run: |
+        echo "Current directory: $(pwd)"
+        echo "Python version: $(python3 --version)"
+        echo "Environment variables: ${{ env }}"
+    - name: Install Dependencies
       run: |
         pip install django
-        python3 manage.py collectstatic
         pip install chromedriver-py
         pip install selenium
+    - name: Run Tests
+      run: |
+        python3 manage.py collectstatic
         python3 manage.py test
