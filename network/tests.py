@@ -9,6 +9,11 @@ from .models import Post, User
 import datetime
 import json
 
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+options = Options()
+options.add_argument('--headless')  # Run Chrome in headless mode
 
 # Create your tests here.
 
@@ -54,7 +59,7 @@ class WebPageTests(StaticLiveServerTestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(username="testuser",password="testpassword",email="test@email.com")
-        self.driver = webdriver.Chrome()
+        self.driver = webdriver.Chrome(options=options)
 
     def tearDown(self):
         Post.objects.all().delete()
