@@ -9,6 +9,7 @@ jobs:
     - name: Run network application tests
       run: |
         pip install django
-        pip install selenium
         python3 manage.py collectstatic
+        pip install chromedriver-py
+        pip install selenium
         python3 manage.py test
