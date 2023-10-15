@@ -1,0 +1,14 @@
+name: Testing
+on: push
+
+jobs:
+  test_project:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run network application tests
+      run: |
+        pip install django
+        pip install selenium
+        python3 manage.py collectstatic
+        python3 manage.py test
