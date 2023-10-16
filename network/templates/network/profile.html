@@ -5,6 +5,7 @@
 {% block body %}
 
 <h3>{{ user_profile.username }} Profile Page</h3>
+<button id="follow" class="btn btn-primary" data-followState="toFollow">Follow</button>
 <div id="posts" data-user_id="{{ user_profile.id }}"></div>
 
 {% endblock %}

@@ -70,7 +70,7 @@ def register(request):
 
 def add_post(request):
     if not request.user.is_authenticated:
-        return JsonResponse({"error":"You must login to create a post"}) 
+        return JsonResponse({"error":"You must login to create a post"},status=400) 
 
     if request.method != "POST":
         return JsonResponse({"error":"Post request required"}, status=400)
@@ -117,3 +117,21 @@ def profile(request,id):
 
     return render(request, "network/profile.html",{"user_profile":user_profile})
 
+
+def follow(request,id):
+    if not request.user.is_authenticated:
+        return JsonResponse({"error":"you must login to follow"},status=400)
+
+    if request.method != "POST":
+        return JsonResponse({"error":"Invalid request"},status=400)
+    
+    follower = request.user
+
+    data = json.loads(request.body)
+    followed_id = data.get("followed_id","")
+    followed = User.objects.get(pk=followed_id)
+
+    follow = Follow(follower=follower, followed=followed)
+    follow.save()
+
+    return JsonResponse({"message":f"{follower} now follows {followed}"},status=200)
