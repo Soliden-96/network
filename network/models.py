@@ -2,7 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class User(AbstractUser):
-    followers = models.ManyToManyField('network.User',related_name="follows")
     pass
 
 class Post(models.Model):
@@ -20,3 +19,11 @@ class Post(models.Model):
 
     def __str__(self):
         return f"{self.poster} wrote a post on {self.timestamp}"
+
+class Follow(models.Model):
+    followed = models.ForeignKey(User, on_delete=models.CASCADE, related_name="followers")
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
+
+    def __str__(self):
+        return f"{self.follower} follows {self.followed}"
+
