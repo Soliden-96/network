@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded',() => {
     
     if (document.querySelector('#profile-page')){
     
-        let userid = parseInt(document.querySelector('#posts').dataset.user_id,10);
+        let userid = parseInt(document.querySelector('#profile-posts').dataset.user_id,10);
         console.log(userid);
         
         load_posts(userid);

@@ -104,6 +104,9 @@ def load_posts(request,posts):
     except ValueError:
         if posts == "all":
             post_list = Post.objects.all()
+        elif posts == "following":
+            followed = Follow.objects.filter(follower=request.user).values("followed")
+            post_list = Post.objects.filter(poster__in=followed)
         else:
             return JsonResponse({"error":"Invalid request"},status = 400)
 

@@ -1,8 +1,12 @@
 document.addEventListener('DOMContentLoaded',() =>{
 
-    document.querySelector('#all-posts').addEventListener('click',() => load_posts('all'));
-    if (document.querySelector('#following-posts')){
-        document.querySelector('#following-posts').addEventListener('click',() => load_posts('following'));
+    
+    if (document.querySelector('#following-page')){
+        
+        document.querySelector('#following-page').addEventListener('click',() => {
+            document.querySelector('#main-page').style.display = 'None';
+            load_posts('following');
+        })
     }
     if (document.querySelector('#submit-post')){
         document.querySelector('#submit-post').addEventListener('submit',(event) => add_post(event));
@@ -41,11 +45,21 @@ document.addEventListener('DOMContentLoaded',() =>{
 
 
     function load_posts(posts){
+        let activeDiv = posts;
+        if (activeDiv === 'all'){
+            activeDiv = 'all-posts';
+        } else if (activeDiv === 'following'){
+            activeDiv = 'following-posts';
+        } else {
+            activeDiv = 'profile-posts';
+        } 
+        document.querySelector(`#${activeDiv}`).innerHTML = "";
+
         fetch(`/load_posts/${posts}`)
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            data.forEach(post => show_post(post))
+            data.forEach(post => show_post(post,activeDiv))
         })
         .catch(error => {
             console.log(error);
@@ -53,7 +67,7 @@ document.addEventListener('DOMContentLoaded',() =>{
     }
 
 
-    function show_post(post){
+    function show_post(post,activeDiv){
         let post_div = document.createElement('div');
         post_div.className = 'post';
 
@@ -67,7 +81,7 @@ document.addEventListener('DOMContentLoaded',() =>{
         timestamp_div.innerHTML = post.timestamp;
 
         post_div.append(poster_div, content_div, timestamp_div);
-        document.querySelector('#posts').prepend(post_div);
+        document.querySelector(`#${activeDiv}`).prepend(post_div);
     }
 
 export { load_posts, show_post };
