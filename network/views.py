@@ -9,7 +9,7 @@ import datetime
 import json
 import time
 
-from .models import User,Post
+from .models import *
 
 
 def index(request):
@@ -114,8 +114,18 @@ def load_posts(request,posts):
 
 def profile(request,id):
     user_profile = User.objects.get(id=id)
+    followed = Follow.objects.filter(followed=user_profile, follower=request.user).exists()
+    followers = Follow.objects.filter(followed=user_profile).count()
+    following = Follow.objects.filter(follower=user_profile).count()
 
-    return render(request, "network/profile.html",{"user_profile":user_profile})
+    context = {
+        "user_profile":user_profile,
+        "followed":followed,
+        "followers":followers,
+        "following":following
+    }
+
+    return render(request, "network/profile.html",context)
 
 
 def follow(request,id):
@@ -128,10 +138,27 @@ def follow(request,id):
     follower = request.user
 
     data = json.loads(request.body)
-    followed_id = data.get("followed_id","")
+    followed_id = data.get("follow_id", "")
     followed = User.objects.get(pk=followed_id)
 
     follow = Follow(follower=follower, followed=followed)
     follow.save()
 
     return JsonResponse({"message":f"{follower} now follows {followed}"},status=200)
+
+def unfollow(request,id):
+    if not request.user.is_authenticated:
+        return JsonResponse({"error":"you must login to unfollow"},status=400)
+
+    if request.method != "DELETE":
+        return JsonResponse({"error":"Invalid request"},status=400)
+
+    follower = request.user
+
+    data = json.loads(request.body)
+    followed_id = data.get("follow_id", "")
+    followed = User.objects.get(pk=followed_id)
+
+    Follow.objects.filter(follower=follower, followed=followed).delete()
+
+    return JsonResponse({"message":f"{follower} unfollowed {followed}"}, status=200)

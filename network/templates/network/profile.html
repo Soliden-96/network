@@ -5,8 +5,27 @@
 {% block body %}
 
 <h3>{{ user_profile.username }} Profile Page</h3>
-<button id="follow" class="btn btn-primary" data-followState="toFollow">Follow</button>
+<div></div>
+<div>Followers:<span id="followers">{{ followers }}</span></div>
+<div>Following: {{ following }}</div>
+
+{% if request.user.is_authenticated and request.user != user_profile %}
+<form  id="followForm" >
+    {% csrf_token %}
+    <button id="follow" type="submit" class="btn btn-primary" data-followed="{% if followed %}followed{% else %}not-followed{% endif %}">
+        {% if followed %}
+            Unfollow
+        {% else %}
+            Follow
+        {% endif %}
+    </button>
+</form>
+{% endif %}   
+
+
+<div id="profile-page">
 <div id="posts" data-user_id="{{ user_profile.id }}"></div>
+</div>
 
 {% endblock %}
 

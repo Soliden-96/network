@@ -4,9 +4,12 @@ document.addEventListener('DOMContentLoaded',() =>{
     if (document.querySelector('#following-posts')){
         document.querySelector('#following-posts').addEventListener('click',() => load_posts('following'));
     }
-    document.querySelector('#submit-post').addEventListener('submit',(event) => add_post(event));
-
-    load_posts('all');
+    if (document.querySelector('#submit-post')){
+        document.querySelector('#submit-post').addEventListener('submit',(event) => add_post(event));
+    }
+    if (document.querySelector('#main-page')){
+        load_posts('all');
+    }
 });
 
 

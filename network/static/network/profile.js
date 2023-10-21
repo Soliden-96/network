@@ -1,29 +1,84 @@
 import { load_posts, show_post } from './posts.js';
 
 document.addEventListener('DOMContentLoaded',() => {
-    let userid = parseInt(document.querySelector('#posts').dataset.user_id,10);
-    console.log(userid);
-    load_posts(userid);
+    console.log('loading...');
     
-    const followButton = document.querySelector('#follow');
-    followButton.addEventListener('click', () => {
-        if (followButton.dataset.followState === "tofollow"){
-            follow(userid);
-        } else if (followButton.dataset.followState === "followed"){
-            unfollow(userid);
+    if (document.querySelector('#profile-page')){
+    
+        let userid = parseInt(document.querySelector('#posts').dataset.user_id,10);
+        console.log(userid);
+        
+        load_posts(userid);
+        
+        const followButton = document.querySelector('#follow');
+        
+        if (followButton){
+            followButton.addEventListener('click', (event) => {
+                event.preventDefault();
+                console.log("starting event");
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                let followed = followButton.dataset.followed;
+                console.log(followed);
+                if (followed === "not-followed"){   
+                    console.log("Following...");
+                    follow(userid,csrfToken,followButton);
+                } else if (followed === "followed"){
+                    
+                    console.log("Unfollowing...")
+                    unfollow(userid,csrfToken,followButton);
+                }
+        });
         }
-    });
+    }
 });
 
-function follow(userid){
+function follow(userid,csrfToken,followButton){
     fetch(`/follow/${userid}`,{
         method:'POST',
+        headers:{
+            'X-CSRFToken': csrfToken
+        },
         body:JSON.stringify({
-            followed_id:userid
+            follow_id:userid
         })
     })
-    .then(response => {
-        console.log(response);
+    .then(response => response.json()) 
+    .then(data => {
+        console.log(data.message);
+        followButton.dataset.followed = "followed";
+        followButton.innerHTML = "Unfollow";
+        let count = parseInt(document.querySelector('#followers').innerHTML,10);
+        console.log(count);
+        count++;
+        document.querySelector('#followers').innerHTML = count;
+    })
+    .catch(error => {
+        console.log(error);
+    });
+}
+
+function unfollow(userid,csrfToken,followButton){
+    fetch(`/unfollow/${userid}`,{
+        method:'DELETE',
+        headers:{
+            'X-CSRFToken': csrfToken
+        },
+        body:JSON.stringify({
+            follow_id:userid
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message);
+        followButton.dataset.followed = "not-followed";
+        followButton.innerHTML = "Follow";
+        let count = parseInt(document.querySelector('#followers').innerHTML,10);
+        console.log(count);
+        count--;
+        document.querySelector('#followers').innerHTML = count;
+    })
+    .catch(error => {
+        console.log(error);
     });
 }
 
