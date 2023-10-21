@@ -82,7 +82,8 @@ class WebPageTests(StaticLiveServerTestCase):
         self.driver.get(self.live_server_url + "")
         self.driver.implicitly_wait(3)
 
-        posts = self.driver.find_element(By.ID,"posts")
+        main_div = self.driver.find_element(By.ID,"main-page")
+        posts = main_div.find_element(By.ID,"all-posts")
         if posts.find_elements(By.CLASS_NAME,"post"):
             elements = posts.find_elements(By.CLASS_NAME,"post")
             count = len(elements)
@@ -97,7 +98,7 @@ class WebPageTests(StaticLiveServerTestCase):
         
         self.driver.implicitly_wait(5)
 
-        posts = self.driver.find_element(By.ID,"posts")
+        posts = main_div.find_element(By.ID,"all-posts")
         new_elements = posts.find_elements(By.CLASS_NAME,"post")
         new_count = len(new_elements)
 

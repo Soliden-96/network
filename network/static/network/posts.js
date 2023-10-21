@@ -33,8 +33,11 @@ document.addEventListener('DOMContentLoaded',() =>{
         })
         .then(response => response.json())
         .then(result => {
-            console.log(result); 
-            show_post(result.post);    
+            console.log(result);
+            if (document.querySelector('#all-posts')){
+                let activeDiv = 'all-posts';
+                show_post(result.post,activeDiv); 
+            }   
         })
         .catch(error => {
             console.log(error);
