@@ -13,6 +13,7 @@ class Post(models.Model):
         return {
             "id":self.id,
             "poster":self.poster.username,
+            "poster_id":self.poster.id,
             "content":self.content,
             "timestamp":self.timestamp.strftime("%b %d %Y, %I:%M %p")
         }

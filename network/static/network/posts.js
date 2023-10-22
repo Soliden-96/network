@@ -73,9 +73,12 @@ document.addEventListener('DOMContentLoaded',() =>{
     function show_post(post,activeDiv){
         let post_div = document.createElement('div');
         post_div.className = 'post';
-
-        let poster_div = document.createElement('div');
-        poster_div.innerHTML = post.poster;
+        
+        console.log(post.poster_id);
+        let profile_url = `/profile/${post.poster_id}`;
+        let poster_link = document.createElement('a');
+        poster_link.innerHTML = post.poster;
+        poster_link.href = profile_url;
 
         let content_div = document.createElement('div');
         content_div.innerHTML = post.content;
@@ -83,7 +86,7 @@ document.addEventListener('DOMContentLoaded',() =>{
         let timestamp_div = document.createElement('div');
         timestamp_div.innerHTML = post.timestamp;
 
-        post_div.append(poster_div, content_div, timestamp_div);
+        post_div.append(poster_link, content_div, timestamp_div);
         document.querySelector(`#${activeDiv}`).prepend(post_div);
     }
 
