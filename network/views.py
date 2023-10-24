@@ -5,16 +5,23 @@ from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.core import serializers
+from django.core.paginator import Paginator
 import datetime
 import json
 import time
+import math
 
 from .models import *
 
 
 def index(request):
     post_list = Post.objects.all()
-    post_list = post_list.order_by("-timestamp").all()
+    post_list = post_list.order_by("-timestamp").all()   
+
+    paginator = Paginator(post_list,5)
+    page_number = request.GET.get('page')
+    post_list = paginator.get_page(page_number)
+
     return render(request, "network/index.html",{"post_list":post_list})
 
 
@@ -99,6 +106,10 @@ def following(request):
     post_list = Post.objects.filter(poster__in=followed)
     post_list = post_list.order_by("-timestamp").all()
 
+    paginator = Paginator(post_list,5)
+    page_number = request.GET.get('page')
+    post_list = paginator.get_page(page_number)
+
     return render(request, "network/following.html", {"post_list":post_list})
 
 
@@ -109,6 +120,10 @@ def profile(request,id):
     following = Follow.objects.filter(follower=user_profile).count()
     post_list = Post.objects.filter(poster_id=id)
     post_list = post_list.order_by("-timestamp").all()
+
+    paginator = Paginator(post_list,5)
+    page_number = request.GET.get('page')
+    post_list = paginator.get_page(page_number)
 
     context = {
         "user_profile":user_profile,
