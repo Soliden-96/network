@@ -8,8 +8,6 @@ document.addEventListener('DOMContentLoaded',() => {
         let userid = parseInt(document.querySelector('#profile-posts').dataset.user_id,10);
         console.log(userid);
         
-        load_posts(userid);
-        
         const followButton = document.querySelector('#follow');
         
         if (followButton){

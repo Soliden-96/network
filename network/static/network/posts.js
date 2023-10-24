@@ -1,19 +1,9 @@
 document.addEventListener('DOMContentLoaded',() =>{
 
-    
-    if (document.querySelector('#following-page')){
-        
-        document.querySelector('#following-page').addEventListener('click',() => {
-            document.querySelector('#main-page').style.display = 'None';
-            load_posts('following');
-        })
-    }
     if (document.querySelector('#submit-post')){
         document.querySelector('#submit-post').addEventListener('submit',(event) => add_post(event));
     }
-    if (document.querySelector('#main-page')){
-        load_posts('all');
-    }
+    
 });
 
 
@@ -46,28 +36,6 @@ document.addEventListener('DOMContentLoaded',() =>{
        
     }
 
-
-    function load_posts(posts){
-        let activeDiv = posts;
-        if (activeDiv === 'all'){
-            activeDiv = 'all-posts';
-        } else if (activeDiv === 'following'){
-            activeDiv = 'following-posts';
-        } else {
-            activeDiv = 'profile-posts';
-        } 
-        document.querySelector(`#${activeDiv}`).innerHTML = "";
-
-        fetch(`/load_posts/${posts}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            data.forEach(post => show_post(post,activeDiv))
-        })
-        .catch(error => {
-            console.log(error);
-        });
-    }
 
 
     function show_post(post,activeDiv){

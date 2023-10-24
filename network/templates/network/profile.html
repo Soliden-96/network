@@ -24,7 +24,15 @@
 
 
 <div id="profile-page">
-<div id="profile-posts" data-user_id="{{ user_profile.id }}"></div>
+<div id="profile-posts" data-user_id="{{ user_profile.id }}">
+    {% for post in post_list %}
+    <div class="post">
+        <a href="{% url 'profile' post.poster_id %}">{{ post.poster }}</a>
+        <div>{{ post.content }}</div>
+        <div>{{ post.timestamp }}</div>
+    </div>
+    {% endfor %}
+</div>
 </div>
 
 {% endblock %}

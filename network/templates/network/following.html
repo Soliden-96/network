@@ -1,4 +1,4 @@
-{% extends "network/layout.html" %}
+{% extends "layout.html" %}
 
 {% load static %}
 
@@ -16,8 +16,8 @@
         </div>
     </div>
 
-    <div id="main-page">
-        <div id="all-posts">
+    <div id="following-page">
+        <div id="following-posts">
             {% for post in post_list %}
                 <div class="post">
                     <a href="{% url 'profile' post.poster_id %}">{{ post.poster }}</a>

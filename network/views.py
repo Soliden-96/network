@@ -13,7 +13,9 @@ from .models import *
 
 
 def index(request):
-    return render(request, "network/index.html")
+    post_list = Post.objects.all()
+    post_list = post_list.order_by("-timestamp").all()
+    return render(request, "network/index.html",{"post_list":post_list})
 
 
 def login_view(request):
@@ -92,27 +94,12 @@ def add_post(request):
     return JsonResponse({"message":"Posted successfully","post":post.serialize()},status = 201)
 
 
-def load_posts(request,posts):
-    if Post.objects.count() == 0:
-        return JsonResponse({"message":"no posts available"})
-    
-    print(f"Received 'posts' parameter: {posts}") 
+def following(request):
+    followed = Follow.objects.filter(follower=request.user).values("followed")
+    post_list = Post.objects.filter(poster__in=followed)
+    post_list = post_list.order_by("-timestamp").all()
 
-    try: 
-        posts = int(posts)
-        post_list = Post.objects.filter(poster_id=posts) #Django convention names and uses underscore for foreign keys
-    except ValueError:
-        if posts == "all":
-            post_list = Post.objects.all()
-        elif posts == "following":
-            followed = Follow.objects.filter(follower=request.user).values("followed")
-            post_list = Post.objects.filter(poster__in=followed)
-        else:
-            return JsonResponse({"error":"Invalid request"},status = 400)
-
-    post_list = post_list.order_by("timestamp").all()
-    
-    return JsonResponse([post.serialize() for post in post_list],safe = False)
+    return render(request, "network/following.html", {"post_list":post_list})
 
 
 def profile(request,id):
@@ -120,12 +107,15 @@ def profile(request,id):
     followed = Follow.objects.filter(followed=user_profile, follower=request.user).exists()
     followers = Follow.objects.filter(followed=user_profile).count()
     following = Follow.objects.filter(follower=user_profile).count()
+    post_list = Post.objects.filter(poster_id=id)
+    post_list = post_list.order_by("-timestamp").all()
 
     context = {
         "user_profile":user_profile,
         "followed":followed,
         "followers":followers,
-        "following":following
+        "following":following,
+        "post_list":post_list
     }
 
     return render(request, "network/profile.html",context)
