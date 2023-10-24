@@ -1,4 +1,3 @@
-import { load_posts, show_post } from './posts.js';
 
 document.addEventListener('DOMContentLoaded',() => {
     console.log('loading...');

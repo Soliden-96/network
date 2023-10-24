@@ -58,5 +58,5 @@ document.addEventListener('DOMContentLoaded',() =>{
         document.querySelector(`#${activeDiv}`).prepend(post_div);
     }
 
-export { load_posts, show_post };
+
 
