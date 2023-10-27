@@ -42,6 +42,14 @@
             {% for page in post_list.paginator.page_range %}
                 <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
             {% endfor %}
+        {% else %}
+          {% if post_list.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ post_list.previous_page_number }}">{{ post_list.previous_page_number }}</a></li>
+          {% endif %}
+            <li class="page-item"><a class="page-link" href="?page={{ post_list.number }}">{{ post_list.number }}</a></li>
+          {% if post_list.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ post_list.next_page_number }}">{{ post_list.next_page_number }}</a></li>
+          {% endif %}
         {% endif %}
         
         {% if post_list.has_next %}
