@@ -25,7 +25,9 @@ document.addEventListener('DOMContentLoaded',() =>{
         .then(result => {
             console.log(result);
             let posts = document.querySelectorAll('.post');
-            posts[posts.length - 1].remove();
+            if (posts.length === 5){
+                posts[posts.length - 1].remove();
+            }
             if (document.querySelector('#all-posts')){
                 let activeDiv = 'all-posts';
                 show_post(result.post,activeDiv); 
