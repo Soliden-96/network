@@ -1,7 +1,14 @@
 document.addEventListener('DOMContentLoaded',() =>{
 
+    let isEditing = false;
     if (document.querySelector('#submit-post')){
         document.querySelector('#submit-post').addEventListener('submit',(event) => add_post(event));
+    }
+
+    if (document.querySelectorAll('.edit-button')) {
+        document.querySelectorAll('.edit-button').forEach(button => {
+            button.addEventListener('click', (event) => edit(event.target));
+        });
     }
     
 });
@@ -31,7 +38,8 @@ document.addEventListener('DOMContentLoaded',() =>{
             if (document.querySelector('#all-posts')){
                 let activeDiv = 'all-posts';
                 show_post(result.post,activeDiv); 
-            }   
+            }
+            document.querySelector('#new-post-text').value = "";   
         })
         .catch(error => {
             console.log(error);
@@ -53,14 +61,60 @@ document.addEventListener('DOMContentLoaded',() =>{
         poster_link.href = profile_url;
 
         let content_div = document.createElement('div');
+        content_div.id = `${post.id}-content`;
         content_div.innerHTML = post.content;
+
+        let edit_button = document.createElement('button');
+        edit_button.dataset.post_id = `${post.id}`;
+        edit_button.className = "btn btn-primary edit-button";
+        edit_button.innerHTML = "Edit";
 
         let timestamp_div = document.createElement('div');
         timestamp_div.innerHTML = post.timestamp;
 
-        post_div.append(poster_link, content_div, timestamp_div);
+        post_div.append(poster_link, content_div, edit_button, timestamp_div);
         document.querySelector(`#${activeDiv}`).prepend(post_div);
     }
 
+    let isEditing = false; // Add this global flag
 
+function edit(button) {
+    let postId = button.dataset.post_id;
+    console.log(postId);
 
+    let content_div = document.getElementById(`${postId}-content`);
+    let textarea = document.getElementById(`${postId}-text`);
+
+    if (!isEditing) {
+        textarea.value = content_div.innerHTML;
+        content_div.style.display = "none";
+        textarea.style.display = "block";
+        button.innerHTML = "Done";
+        isEditing = true;
+    } else {
+        // Handle "Done" mode here
+        let new_content = textarea.value;
+        console.log(new_content);
+
+        // Send the request and update the content_div
+        fetch(`/edit/${postId}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                postId: postId,
+                new_content: new_content
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+            content_div.innerHTML = new_content;
+            textarea.style.display = "none";
+            content_div.style.display = "block";
+            button.innerHTML = 'Edit';
+            isEditing = false; // Reset the flag
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    }
+}

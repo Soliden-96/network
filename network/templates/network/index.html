@@ -21,7 +21,11 @@
             {% for post in post_list %}
                 <div class="post">
                     <a href="{% url 'profile' post.poster_id %}">{{ post.poster }}</a>
-                    <div>{{ post.content }}</div>
+                    <div id="{{ post.id }}-content">{{ post.content }}</div>
+                    <textarea id="{{ post.id }}-text" style="display:none;" value="{{ post.content }}"></textarea>
+                    {% if post.poster == request.user %}
+                      <button class="btn btn-primary edit-button" data-post_id="{{ post.id }}" type="button">Edit</button>
+                    {% endif %}
                     <div>{{ post.timestamp }}</div>
                 </div>
             {% endfor %}
