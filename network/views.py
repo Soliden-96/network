@@ -23,7 +23,13 @@ def index(request):
     page_number = request.GET.get('page')
     post_list = paginator.get_page(page_number)
 
-    return render(request, "network/index.html",{"post_list":post_list})
+    liked = []
+    if request.user.is_authenticated:
+        user_likes = Like.objects.filter(liker=request.user)
+        liked = Post.objects.filter(likes__in=user_likes)
+
+    
+    return render(request, "network/index.html",{"post_list":post_list,"liked":liked})
 
 
 def login_view(request):
@@ -111,7 +117,12 @@ def following(request):
     page_number = request.GET.get('page')
     post_list = paginator.get_page(page_number)
 
-    return render(request, "network/following.html", {"post_list":post_list})
+    liked = []
+    if request.user.is_authenticated:
+        user_likes = Like.objects.filter(liker=request.user)
+        liked = Post.objects.filter(likes__in=user_likes)
+
+    return render(request, "network/following.html", {"post_list":post_list,"liked":liked})
 
 
 def profile(request,id):
@@ -126,12 +137,18 @@ def profile(request,id):
     page_number = request.GET.get('page')
     post_list = paginator.get_page(page_number)
 
+    liked = []
+    if request.user.is_authenticated:
+        user_likes = Like.objects.filter(liker=request.user)
+        liked = Post.objects.filter(likes__in=user_likes)
+
     context = {
         "user_profile":user_profile,
         "followed":followed,
         "followers":followers,
         "following":following,
-        "post_list":post_list
+        "post_list":post_list,
+        "liked":liked
     }
 
     return render(request, "network/profile.html",context)
