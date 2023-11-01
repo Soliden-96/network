@@ -1,14 +1,21 @@
 document.addEventListener('DOMContentLoaded',() =>{
-
-    let isEditing = false;
+    const csrfToken = Cookies.get('csrftoken');
+    console.log(csrfToken);
+    
     if (document.querySelector('#submit-post')){
         document.querySelector('#submit-post').addEventListener('submit',(event) => add_post(event));
     }
 
     if (document.querySelectorAll('.edit-button')) {
         document.querySelectorAll('.edit-button').forEach(button => {
-            button.addEventListener('click', (event) => edit(event.target));
+            button.addEventListener('click', (event) => edit(event.target,csrfToken));
         });
+    }
+
+    if (document.querySelectorAll('.likeButton')){
+        document.querySelectorAll('.likeButton').forEach(button => {
+            button.addEventListener('click', (event) => like(event.target,csrfToken));
+        })
     }
     
 });
@@ -44,10 +51,7 @@ document.addEventListener('DOMContentLoaded',() =>{
         .catch(error => {
             console.log(error);
         });
-        
-       
     }
-
 
 
     function show_post(post,activeDiv){
@@ -76,9 +80,9 @@ document.addEventListener('DOMContentLoaded',() =>{
         document.querySelector(`#${activeDiv}`).prepend(post_div);
     }
 
-    let isEditing = false; // Add this global flag
+    let isEditing = false;
 
-function edit(button) {
+function edit(button,csrfToken) {
     let postId = button.dataset.post_id;
     console.log(postId);
 
@@ -99,6 +103,9 @@ function edit(button) {
         // Send the request and update the content_div
         fetch(`/edit/${postId}`, {
             method: 'PUT',
+            headers:{
+                'X-CSRFToken':csrfToken
+            },
             body: JSON.stringify({
                 postId: postId,
                 new_content: new_content
@@ -116,5 +123,50 @@ function edit(button) {
         .catch(error => {
             console.log(error);
         });
+    }
+}
+
+
+function like(button,csrfToken){
+    let postId = button.dataset.post_id;
+
+    if (button.dataset.liked === "liked"){
+        fetch(`/like/${postId}`,{
+            method:'DELETE',
+            headers:{
+                'X-CSRFToken':csrfToken
+            },
+            body:JSON.stringify({
+                postId:postId
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+            button.dataset.liked = "not-liked";
+            button.innerHTML = "Like";
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    } else {
+        fetch(`/like/${postId}`,{
+            method:'POST',
+            headers:{
+                'X-CSRFToken':csrfToken
+            },
+            body:JSON.stringify({
+                postId:postId
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+            button.dataset.liked = "liked";
+            button.innerHTML = "Unlike";
+        })
+        .catch(error => {
+            console.log(error);
+        })
     }
 }

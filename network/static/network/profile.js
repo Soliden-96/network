@@ -1,6 +1,7 @@
 
 document.addEventListener('DOMContentLoaded',() => {
     console.log('loading...');
+   
     
     if (document.querySelector('#profile-page')){
     

@@ -25,9 +25,9 @@
                     <textarea id="{{ post.id }}-text" style="display:none;" value="{{ post.content }}"></textarea>
                     {% if user.is_authenticated %}
                       {% if post in liked %}
-                        <button class="btn btn-danger likeButton">Unlike</button>
+                        <button class="btn btn-danger likeButton" data-post_id="{{ post.id }}" data-liked="liked">Unlike</button>
                       {% else %}
-                        <button class="btn btn-danger likeButton">Like</button>
+                        <button class="btn btn-danger likeButton" data-post_id="{{ post.id }}" data-liked="not-liked">Like</button>
                       {% endif %}
                     {% endif %}
                     {% if post.poster == request.user %}
@@ -79,5 +79,6 @@
 {% endblock %}
 
 {% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <script  src="{% static 'network/posts.js' %}"></script>
 {% endblock %}

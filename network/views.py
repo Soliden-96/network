@@ -189,7 +189,7 @@ def unfollow(request,id):
 
     return JsonResponse({"message":f"{follower} unfollowed {followed}"}, status=200)
 
-@csrf_exempt
+
 def edit(request,id):
     if request.method != "PUT":
         return JsonResponse({"error":"Invalid request"},status=400)
@@ -203,3 +203,26 @@ def edit(request,id):
     post.save()
 
     return JsonResponse({"message":"post edited succesfully"},status=200)
+
+def like(request,id):
+    if request.method != "DELETE" and request.method != "POST":
+        return JsonResponse({"error":"Invalid request"},status=400)
+
+    post_id = id
+
+    if request.method == "DELETE":
+        liked_post = Post.objects.get(pk=post_id)
+        Like.objects.filter(liked_post=liked_post,liker=request.user).delete()
+
+        return JsonResponse({"message":"Post unliked succesfully"},status=200)
+    
+    if request.method == "POST":
+        liked_post = Post.objects.get(pk=post_id)
+        like = Like(liked_post=liked_post,liker=request.user)
+        like.save()
+
+        return JsonResponse({"message":"Post liked succesffully"},status=200)
+
+
+        
+
