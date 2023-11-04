@@ -154,7 +154,7 @@ def profile(request,id):
     return render(request, "network/profile.html",context)
 
 
-def follow(request,id):
+def follow(request):
     if not request.user.is_authenticated:
         return JsonResponse({"error":"you must login to follow"},status=400)
 
@@ -172,7 +172,7 @@ def follow(request,id):
 
     return JsonResponse({"message":f"{follower} now follows {followed}"},status=200)
 
-def unfollow(request,id):
+def unfollow(request):
     if not request.user.is_authenticated:
         return JsonResponse({"error":"you must login to unfollow"},status=400)
 
@@ -190,38 +190,39 @@ def unfollow(request,id):
     return JsonResponse({"message":f"{follower} unfollowed {followed}"}, status=200)
 
 
-def edit(request,id):
+def edit(request):
     if request.method != "PUT":
         return JsonResponse({"error":"Invalid request"},status=400)
 
-    post_id = id
     data = json.loads(request.body)
+    post_id = data.get("postId","")
     new_content = data.get("new_content", "")
-    print(new_content)
     post = Post.objects.get(id=post_id)
     post.content = new_content
     post.save()
 
-    return JsonResponse({"message":"post edited succesfully"},status=200)
+    return JsonResponse({"message":"post edited succesfully"},status=201)
 
-def like(request,id):
+def like(request):
     if request.method != "DELETE" and request.method != "POST":
         return JsonResponse({"error":"Invalid request"},status=400)
 
-    post_id = id
-
     if request.method == "DELETE":
+        data = json.loads(request.body)
+        post_id = data.get("postId","")
         liked_post = Post.objects.get(pk=post_id)
         Like.objects.filter(liked_post=liked_post,liker=request.user).delete()
 
-        return JsonResponse({"message":"Post unliked succesfully"},status=200)
+        return JsonResponse({"message":"Post unliked succesfully"},status=201)
     
     if request.method == "POST":
+        data = json.loads(request.body)
+        post_id = data.get("postId","")
         liked_post = Post.objects.get(pk=post_id)
         like = Like(liked_post=liked_post,liker=request.user)
         like.save()
 
-        return JsonResponse({"message":"Post liked succesffully"},status=200)
+        return JsonResponse({"message":"Post liked succesffully"},status=201)
 
 
         

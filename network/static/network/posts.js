@@ -96,12 +96,10 @@ function edit(button,csrfToken) {
         button.innerHTML = "Done";
         isEditing = true;
     } else {
-        // Handle "Done" mode here
         let new_content = textarea.value;
         console.log(new_content);
 
-        // Send the request and update the content_div
-        fetch(`/edit/${postId}`, {
+        fetch('/edit', {
             method: 'PUT',
             headers:{
                 'X-CSRFToken':csrfToken
@@ -118,7 +116,7 @@ function edit(button,csrfToken) {
             textarea.style.display = "none";
             content_div.style.display = "block";
             button.innerHTML = 'Edit';
-            isEditing = false; // Reset the flag
+            isEditing = false; 
         })
         .catch(error => {
             console.log(error);
@@ -131,7 +129,7 @@ function like(button,csrfToken){
     let postId = button.dataset.post_id;
 
     if (button.dataset.liked === "liked"){
-        fetch(`/like/${postId}`,{
+        fetch('/like',{
             method:'DELETE',
             headers:{
                 'X-CSRFToken':csrfToken
@@ -145,12 +143,15 @@ function like(button,csrfToken){
             console.log(result);
             button.dataset.liked = "not-liked";
             button.innerHTML = "Like";
+            let likes = document.getElementById(`${postId}-likes`).innerHTML;
+            likes--;
+            document.getElementById(`${postId}-likes`).innerHTML = likes;
         })
         .catch(error => {
             console.log(error);
         });
     } else {
-        fetch(`/like/${postId}`,{
+        fetch('/like',{
             method:'POST',
             headers:{
                 'X-CSRFToken':csrfToken
@@ -164,6 +165,9 @@ function like(button,csrfToken){
             console.log(result);
             button.dataset.liked = "liked";
             button.innerHTML = "Unlike";
+            let likes = document.getElementById(`${postId}-likes`).innerHTML;
+            likes++;
+            document.getElementById(`${postId}-likes`).innerHTML = likes;
         })
         .catch(error => {
             console.log(error);

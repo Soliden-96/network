@@ -30,6 +30,7 @@
         <a href="{% url 'profile' post.poster_id %}">{{ post.poster }}</a>
         <div id="{{ post.id }}-content">{{ post.content }}</div>
         <textarea id="{{ post.id }}-text" style="display:none;" value="{{ post.content }}"></textarea>
+        <div id="{{ post.id }}-likes">{{ post.likes.count }}</div>
         {% if user.is_authenticated %}
           {% if post in liked %}
             <button class="btn btn-danger likeButton" data-post_id="{{ post.id }}" data-liked="liked">Unlike</button>

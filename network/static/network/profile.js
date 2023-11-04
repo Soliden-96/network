@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded',() => {
 });
 
 function follow(userid,csrfToken,followButton){
-    fetch(`/follow/${userid}`,{
+    fetch('/follow',{
         method:'POST',
         headers:{
             'X-CSRFToken': csrfToken
@@ -56,7 +56,7 @@ function follow(userid,csrfToken,followButton){
 }
 
 function unfollow(userid,csrfToken,followButton){
-    fetch(`/unfollow/${userid}`,{
+    fetch('/unfollow',{
         method:'DELETE',
         headers:{
             'X-CSRFToken': csrfToken

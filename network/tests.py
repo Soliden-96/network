@@ -8,9 +8,8 @@ from selenium.webdriver.common.by import By
 from .models import Post, User
 import datetime
 import json
-
-from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+
 
 options = Options()
 options.add_argument('--headless')  # Run Chrome in headless mode
@@ -49,11 +48,26 @@ class AddPostTestCase(TestCase):
         self.assertEqual(response.status_code,400)
         self.assertEqual(Post.objects.count(),0)
 
+    def test_likes_and_unlikes(self):
+        c=Client()
+        c.login(username="testuser",password="testpassword")
+        data = {
+            'content':'this is a test'
+        }
+        c.post("/add_post",data = json.dumps(data),content_type="application/json")
+        data_for_like = {
+            'postId':'1'
+        }
+        response = c.post("/like",data = json.dumps(data_for_like),content_type="application/json")
+
+        self.assertEqual(response.status_code,201)
+        self.assertEqual(Like.objects.count(),1)
+
+
+
 
 def file_uri(filename):
         return pathlib.Path(os.path.abspath(filename)).as_uri()
-
-
 
 class WebPageTests(StaticLiveServerTestCase):
 
