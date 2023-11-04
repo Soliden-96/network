@@ -170,7 +170,7 @@ def follow(request):
     follow = Follow(follower=follower, followed=followed)
     follow.save()
 
-    return JsonResponse({"message":f"{follower} now follows {followed}"},status=200)
+    return JsonResponse({"message":f"{follower} now follows {followed}"},status=201)
 
 def unfollow(request):
     if not request.user.is_authenticated:
@@ -187,7 +187,7 @@ def unfollow(request):
 
     Follow.objects.filter(follower=follower, followed=followed).delete()
 
-    return JsonResponse({"message":f"{follower} unfollowed {followed}"}, status=200)
+    return JsonResponse({"message":f"{follower} unfollowed {followed}"}, status=201)
 
 
 def edit(request):
@@ -196,6 +196,10 @@ def edit(request):
 
     data = json.loads(request.body)
     post_id = data.get("postId","")
+    
+    if data.get("new_content","").strip() == "":
+        return JsonResponse({"error":"Empty post"},status=400)
+    
     new_content = data.get("new_content", "")
     post = Post.objects.get(id=post_id)
     post.content = new_content

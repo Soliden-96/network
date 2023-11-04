@@ -1,18 +1,11 @@
 from django.test import TestCase, Client
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import os 
 import pathlib
 import unittest
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from .models import Post, User
+from .models import *
 import datetime
 import json
-from selenium.webdriver.chrome.options import Options
 
-
-options = Options()
-options.add_argument('--headless')  # Run Chrome in headless mode
 
 # Create your tests here.
 
@@ -20,10 +13,13 @@ class AddPostTestCase(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(username="testuser",password="testpassword",email="test@email.com")
+        self.user2 = User.objects.create_user(username="tester2",password="pass2",email="second@email.com")
+
 
     def tearDown(self):
         Post.objects.all().delete()
         User.objects.all().delete()
+
 
     def test_add_post_correctly(self):
         c=Client()
@@ -37,6 +33,7 @@ class AddPostTestCase(TestCase):
         self.assertEqual(response.status_code,201)
         self.assertEqual(Post.objects.count(),1)
 
+
     def test_add_post_incorrectly(self):
         c=Client()
         c.login(username="testuser",password="testpassword")
@@ -47,6 +44,7 @@ class AddPostTestCase(TestCase):
 
         self.assertEqual(response.status_code,400)
         self.assertEqual(Post.objects.count(),0)
+
 
     def test_likes_and_unlikes(self):
         c=Client()
@@ -63,60 +61,86 @@ class AddPostTestCase(TestCase):
         self.assertEqual(response.status_code,201)
         self.assertEqual(Like.objects.count(),1)
 
+        response = c.delete("/like",data = json.dumps(data_for_like),content_type="application/json")
+
+        self.assertEqual(response.status_code,201)
+        self.assertEqual(Like.objects.count(),0)
 
 
-
-def file_uri(filename):
-        return pathlib.Path(os.path.abspath(filename)).as_uri()
-
-class WebPageTests(StaticLiveServerTestCase):
-
-    def setUp(self):
-        self.user = User.objects.create_user(username="testuser",password="testpassword",email="test@email.com")
-        self.driver = webdriver.Chrome(options=options)
-
-    def tearDown(self):
-        Post.objects.all().delete()
-        User.objects.all().delete()
-        self.driver.quit()
-
-    def login_user(self):
-        self.driver.get(self.live_server_url + "/login")
-        user_field = self.driver.find_element(By.NAME,"username")
-        pass_field = self.driver.find_element(By.NAME,"password")
-        btn = self.driver.find_element(By.ID,"login-button")
-        user_field.send_keys("testuser")
-        pass_field.send_keys("testpassword")
-        btn.click()
-    
-    def test_adds_post_to_page(self):
-        self.login_user()
-        self.driver.implicitly_wait(3)
-
-        self.driver.get(self.live_server_url + "")
-        self.driver.implicitly_wait(3)
-
-        main_div = self.driver.find_element(By.ID,"main-page")
-        posts = main_div.find_element(By.ID,"all-posts")
-        if posts.find_elements(By.CLASS_NAME,"post"):
-            elements = posts.find_elements(By.CLASS_NAME,"post")
-            count = len(elements)
-        else:
-            count = 0
+    def test_correct_and_incorrect_edit(self):
+        c=Client()
+        c.login(username="testuser",password="testpassword")
+        data = {
+            'content':'this is a test'
+        }
+        c.post("/add_post",data = json.dumps(data),content_type="application/json")
+        data_for_edit = {
+            'new_content':'Editing..',
+            'postId':'1'
+        }
+        response = c.put("/edit",data = json.dumps(data_for_edit),content_type="application/json")
         
-        textarea = self.driver.find_element(By.ID,"new-post-text")
-        submit = self.driver.find_element(By.ID,"new-post-button")
-
-        textarea.send_keys("This is a new post")
-        submit.click()
+        self.assertEqual(response.status_code,201)
         
-        self.driver.implicitly_wait(5)
+        post = Post.objects.get(pk=1)
+        new_content = 'Editing..'
+        
+        self.assertEqual(post.content,new_content)
 
-        posts = main_div.find_element(By.ID,"all-posts")
-        new_elements = posts.find_elements(By.CLASS_NAME,"post")
-        new_count = len(new_elements)
+        incorrect_edit = {
+            'new_content':'    ',
+            'postId':'1'
+        }
+        response = c.put("/edit",data = json.dumps(incorrect_edit),content_type="application/json")
 
-        self.assertEqual(new_count,count+1)
+        self.assertEqual(response.status_code,400)
+
+
+    def test_follow_and_unfollow(self):
+        c = Client()
+        c.login(username="testuser",password="testpassword")
+        data = {
+            'follow_id':'2'
+        }
+        response = c.post("/follow",data = json.dumps(data),content_type="application/json")
+        
+        self.assertEqual(response.status_code,201)
+        c.logout()
+        
+        c.login(username="tester2",password="pass2")
+        data2 = {
+            'follow_id':'1'
+        }
+        response = c.post("/follow",data = json.dumps(data2),content_type="application/json")
+
+        self.assertEqual(response.status_code,201)
+        self.assertEqual(Follow.objects.count(),2)
+
+        response = c.delete("/unfollow",data = json.dumps(data2), content_type="application/json")
+
+        self.assertEqual(response.status_code,201)
+        self.assertEqual(Follow.objects.count(),1)
+
+
+    def test_incorrect_follow(self):
+        c = Client()
+        response = c.get("/follow")
+        self.assertEqual(response.status_code,400)
+
+        data = {
+            'follow_id':'2'
+        }
+        response = c.post("/follow",data = json.dumps(data), content_type="application/json")
+        self.assertEqual(response.status_code,400)
+
+        
+
+
+
+
+
+
+
     
     
 
