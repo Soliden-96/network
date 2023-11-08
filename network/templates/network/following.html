@@ -18,29 +18,34 @@
 
     <div id="following-page">
         <div id="following-posts">
-            {% for post in post_list %}
-                <div class="post">
-                    <a href="{% url 'profile' post.poster_id %}">{{ post.poster }}</a>
-                    <div id="{{ post.id }}-content">{{ post.content }}</div>
-                    <textarea id="{{ post.id }}-text" style="display:none;" value="{{ post.content }}"></textarea>
-                    <div id="{{ post.id }}-likes">{{ post.likes.count }}</div>
-                    {% if user.is_authenticated %}
-                      {% if post in liked %}
-                        <button class="btn btn-danger likeButton" data-post_id="{{ post.id }}" data-liked="liked">Unlike</button>
-                      {% else %}
-                        <button class="btn btn-danger likeButton" data-post_id="{{ post.id }}" data-liked="not-liked">Like</button>
-                      {% endif %}
-                    {% endif %}
-                    {% if post.poster == request.user %}
-                      <button class="btn btn-primary edit-button" data-post_id="{{ post.id }}" type="button">Edit</button>
-                    {% endif %}
-                    <div>{{ post.timestamp }}</div>
-                </div>
-            {% endfor %}
+          {% for post in post_list %}
+          <div class="post">
+            <div class="poster-name-div">
+              <a href="{% url 'profile' post.poster_id %}" class="poster-name">{{ post.poster }}</a>
+            </div>
+              {% if post.poster == request.user %}
+                <button class="btn btn-outline-primary btn-sm edit-button" data-post_id="{{ post.id }}" type="button">Edit</button>
+              {% endif %}
+              <div class="content" id="{{ post.id }}-content">{{ post.content }}</div>
+              <textarea class="content" id="{{ post.id }}-text" style="display:none;" value="{{ post.content }}"></textarea>
+              <div class="tmstmp">{{ post.timestamp }}</div>
+              {% if user.is_authenticated %}
+                {% if post in liked %}
+                  <button class="btn btn-outline-danger btn-sm likeButton" data-post_id="{{ post.id }}" data-liked="liked">&#9829;</button>
+                {% else %}
+                  <button class="btn btn-outline-danger btn-sm likeButton" data-post_id="{{ post.id }}" data-liked="not-liked">&#9825;</button>
+                {% endif %}
+              {% endif %}
+              <div class="likes-count">
+                <span id="{{ post.id }}-likes">{{ post.likes.count }}</span>
+                <span>"likes"</span>
+              </div> 
+          </div>
+      {% endfor %}
         </div>
     </div>
 
-    <nav aria-label="Page navigation">
+    <nav class="navigation" aria-label="Page navigation">
         <ul class="pagination">
         {% if post_list.has_previous %}
           <li class="page-item">
@@ -58,7 +63,7 @@
           {% if post_list.has_previous %}
             <li class="page-item"><a class="page-link" href="?page={{ post_list.previous_page_number }}">{{ post_list.previous_page_number }}</a></li>
           {% endif %}
-            <li class="page-item"><a class="page-link" href="?page={{ post_list.number }}">{{ post_list.number }}</a></li>
+            <li class="page-item"><a class="page-link selected-page" href="?page={{ post_list.number }}">{{ post_list.number }}</a></li>
           {% if post_list.has_next %}
             <li class="page-item"><a class="page-link" href="?page={{ post_list.next_page_number }}">{{ post_list.next_page_number }}</a></li>
           {% endif %}

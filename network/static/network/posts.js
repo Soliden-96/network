@@ -142,7 +142,7 @@ function like(button,csrfToken){
         .then(result => {
             console.log(result);
             button.dataset.liked = "not-liked";
-            button.innerHTML = "Like";
+            button.innerHTML = "&#9825;";
             let likes = document.getElementById(`${postId}-likes`).innerHTML;
             likes--;
             document.getElementById(`${postId}-likes`).innerHTML = likes;
@@ -164,7 +164,7 @@ function like(button,csrfToken){
         .then(result => {
             console.log(result);
             button.dataset.liked = "liked";
-            button.innerHTML = "Unlike";
+            button.innerHTML = "&#9829;";
             let likes = document.getElementById(`${postId}-likes`).innerHTML;
             likes++;
             document.getElementById(`${postId}-likes`).innerHTML = likes;
