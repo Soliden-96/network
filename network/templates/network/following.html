@@ -3,6 +3,7 @@
 {% load static %}
 
 {% block body %}
+{% if user.is_authenticated %}
     <div id="new-post">
         <div id="new-post-form">
             New Post
@@ -15,6 +16,7 @@
             </form>
         </div>
     </div>
+  {% endif %}
 
     <div id="following-page">
         <div id="following-posts">

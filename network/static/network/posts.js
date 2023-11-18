@@ -59,10 +59,14 @@ document.addEventListener('DOMContentLoaded',() =>{
         post_div.className = 'post';
         
         console.log(post.poster_id);
+        let poster_div = document.createElement('div');
+        poster_div.className = 'poster-name-div';
         let profile_url = `/profile/${post.poster_id}`;
         let poster_link = document.createElement('a');
+        poster_link.className = 'poster-name';
         poster_link.innerHTML = post.poster;
         poster_link.href = profile_url;
+        poster_div.append(poster_link);
 
         let content_div = document.createElement('div');
         content_div.id = `${post.id}-content`;
@@ -70,13 +74,13 @@ document.addEventListener('DOMContentLoaded',() =>{
 
         let edit_button = document.createElement('button');
         edit_button.dataset.post_id = `${post.id}`;
-        edit_button.className = "btn btn-primary edit-button";
+        edit_button.className = "btn btn-outline-primary btn-sm edit-button";
         edit_button.innerHTML = "Edit";
 
         let timestamp_div = document.createElement('div');
         timestamp_div.innerHTML = post.timestamp;
 
-        post_div.append(poster_link, content_div, edit_button, timestamp_div);
+        post_div.append(poster_div, edit_button, content_div, timestamp_div);
         document.querySelector(`#${activeDiv}`).prepend(post_div);
     }
 
