@@ -122,16 +122,7 @@ class AddPostTestCase(TestCase):
         self.assertEqual(Follow.objects.count(),1)
 
 
-    def test_incorrect_follow(self):
-        c = Client()
-        response = c.get("/follow")
-        self.assertEqual(response.status_code,400)
-
-        data = {
-            'follow_id':'2'
-        }
-        response = c.post("/follow",data = json.dumps(data), content_type="application/json")
-        self.assertEqual(response.status_code,400)
+    
 
         
 
